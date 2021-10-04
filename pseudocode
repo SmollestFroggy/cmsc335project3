@@ -1,0 +1,35 @@
+import java Swing GUI (add imports as you use them. Unused imports will cause an error line, a.k.a be useless.)
+
+file1: traffic light and car Sim GUI 
+details: -able to put current stamps in 1 second intervals
+- Real-time Traffic Light display for three major intersections
+-X, Y positions and speed of up to 3 cars as they traverse each of the 3 intersections
+
+Requirements: 
+
+- Components listed above should run in seperate threads. 
+- Loop through the simulation with button(s) that can START, PAUSE, STOP, and continue on with simulation
+- Distance formulas will be used e.g: distance = Speed * time. Define all units of measure no acronyms type out mile/hour, or kilometer/hour not km/h or m/h
+- Distance between each light is 1000meters ( IS A COMPLETE STRAIGHT LINE) 
+- Y = 0 for your x,y positions. 
+- no physics is required, Cars will stop immeditately on red light, and run through yellow and green lights. 
+
+For me: 
+Possible GUI SWING options: 
+-GRAPH, LAYOUT, FLOWCHART   OR   Hard code panel corridinates and buttons
+-Use array options in order to do display code in a signification way.
+
+
+Possible way to display x,y, and seped of 3 cars:
+-Add datatable and displays in array format. 
+
+How to display the cars traveling along the rode:
+Using a slider to show
+
+
+Hard code option 
+Steps: 
+- Create GUI WINDOW WITH LABELS BEFORE GIVING FUNCTIONS. 
+- Label Buttons. 
+- GUI needs to be able to store and edit informtion, create an array. 
+-  
