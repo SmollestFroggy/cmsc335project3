@@ -1,13 +1,14 @@
 package CMSC335_project3;
 
-
 import java.awt.Dimension;
-
+import java.awt.event.ActionEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 
-
-public class trafficLightandCarGui extends JFrame 
+public class trafficLightandCarGui extends JFrame implements Runnable, ChangeListener
 {
 	
 	static JLabel trafficLight1at1000Text = new JLabel();
@@ -23,21 +24,37 @@ public class trafficLightandCarGui extends JFrame
 	static JSlider car_1_Slider = new JSlider(0, 3000);
 	static JSlider car_2_Slider = new JSlider(0, 3000);
 	static JSlider car_3_Slider = new JSlider(0, 3000);
+	static JSlider car_4_Slider = new JSlider(0, 3000);
 
+	
+	private static boolean carisRunning;
+	private static final AtomicBoolean trafficCarSimulatorIsRunning = new AtomicBoolean(false);
+	
 	//creates 3 runnable car objects and a thread for each car object
 	CarFormula car_1 = new CarFormula("Car_1Thread", 200, 0);
 	CarFormula car_2 = new CarFormula("Car_2Thread", 600, 0);
-	CarFormula car_3 = new CarFormula("Car_3Thread", 1500, 500);
+	CarFormula car_3 = new CarFormula("Car_3Thread", 2000, 1000);
+	CarFormula car_4 = new CarFormula("Car_3Thread", 2000, 1000);
+	
+	TrafficLightIntersection Light_1 = new TrafficLightIntersection("1stThread", trafficLight1at1000Text);
+	TrafficLightIntersection Light_2 = new TrafficLightIntersection("2ndThread", trafficLight2at2000Text);
+	TrafficLightIntersection Light_3 = new TrafficLightIntersection("3rdThread", trafficLight3at3000Text);
 
+	
 	//This is an array that allows for a loop.
-	CarFormula[] carObjectsArray = {car_1, car_2, car_3};
+	CarFormula[] carObjectsArray = {car_1, car_2, car_3, car_4};
+	TrafficLightIntersection[] TrafficLightintersectionArray = {Light_1, Light_2, Light_3};
 	static Thread gui;
 	
 	
-	Object [][] carStateData = { {"Car #1", car_1.getX_Position(), 0, 0}, {"Car #2", car_2.getX_Position() , 0 ,0}, {"Car #3", car_3.getX_Position(), 0 ,0}};
+	Object [][] carStateData = { 
+			{"Car #1", car_1.getX_Position(), 0, 0}
+			, {"Car #2", car_2.getX_Position() , 0 ,0}
+			, {"Car #3", car_3.getX_Position(), 0 ,0}
+			, {"Car #4", car_4.getX_Position(), 0 ,0}};
 	
 	
-	String[] columnNameLabels = {"Car#" , "X-Position" , "Y-Position" , "Speed(in Kilometers per hour)"};
+	String[] columnNameLabels = {"Car#" , "X-Position" , "Y-Position" , "Speed(Kilometers/hour)"};
 	JTable carDataTable = new JTable(carStateData, columnNameLabels);
 		
 	
@@ -46,8 +63,10 @@ public class trafficLightandCarGui extends JFrame
 	{
 		
 		super("CMSC335_Project3_Nathan_Ma's_Traffic_and_Car_Tracker");
+		carisRunning = Thread.currentThread().isAlive();
 		createGUI();
-		
+        setButtons();
+
 	}
 	
 	private void display()
@@ -74,32 +93,43 @@ public class trafficLightandCarGui extends JFrame
 		JLabel trafficLight2at2000 = new JLabel("Intersection 2 (2000 Meters):");
 		JLabel trafficLight3at3000 = new JLabel("Intersection 3 (3000 Meters):");
 		
+		car_1_Slider.addChangeListener(this);
+		car_2_Slider.addChangeListener(this);
+		car_3_Slider.addChangeListener(this);
+		car_4_Slider.addChangeListener(this);
+
+
+		
 		car_1_Slider.setValue(car_1.getX_Position());
 		car_2_Slider.setValue(car_2.getX_Position());
 		car_3_Slider.setValue(car_3.getX_Position());
+		car_4_Slider.setValue(car_4.getX_Position());
 		
 		
 		car_1_Slider.setPaintTicks(true);
-		car_1_Slider.setPaintTrack(true);
 		car_1_Slider.setPaintLabels(true);
 		car_1_Slider.setMajorTickSpacing(1000);
 		car_1_Slider.setMinorTickSpacing(100);
-		
-		
+				
 		
 		car_2_Slider.setPaintTicks(true);
-		car_2_Slider.setPaintTrack(true);
 		car_2_Slider.setPaintLabels(true);
 		car_2_Slider.setMajorTickSpacing(1000);
 		car_2_Slider.setMinorTickSpacing(100);
 		
+		
 		car_3_Slider.setPaintTicks(true);
-		car_3_Slider.setPaintTrack(true);
 		car_3_Slider.setPaintLabels(true);
 		car_3_Slider.setMajorTickSpacing(1000);
 		car_3_Slider.setMinorTickSpacing(100);
 		
-		carDataTable.setPreferredScrollableViewportSize(new Dimension(400, 50));
+		
+		car_4_Slider.setPaintTicks(true);
+		car_4_Slider.setPaintLabels(true);
+		car_4_Slider.setMajorTickSpacing(1000);
+		car_4_Slider.setMinorTickSpacing(100);
+		
+		carDataTable.setPreferredScrollableViewportSize(new Dimension(650, 70));
 		carDataTable.setFillsViewportHeight(true);
 		
 		
@@ -119,26 +149,26 @@ public class trafficLightandCarGui extends JFrame
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(greetingTitle).addComponent(userInstruction1)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						 .addGroup(layout.createSequentialGroup()    
 				                    .addComponent(start).addComponent(pause).addComponent(stop)))       
-				                    .addComponent(car_1_Slider).addComponent(car_2_Slider).addComponent(car_3_Slider) 			                  
+				                    .addComponent(car_1_Slider).addComponent(car_2_Slider).addComponent(car_3_Slider).addComponent(car_4_Slider) 			                  
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
 						.addGroup(layout.createSequentialGroup()
 								.addComponent(trafficLight1at1000).addComponent(trafficLight1at1000Text).addContainerGap(20,20) 
 								.addComponent(trafficLight2at2000).addComponent(trafficLight2at2000Text).addContainerGap(20,20)								
 								.addComponent(trafficLight3at3000).addComponent(trafficLight3at3000Text))						
 								.addComponent(carDataPanel)))
-				.addContainerGap(10,10)
+				.addContainerGap(30,30)
 		);
 		
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createSequentialGroup().addComponent(greetingTitle).addComponent(userInstruction1))
-					.addGap(10, 10, 10)
+					.addGap(20, 20, 20)
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(start).addComponent(pause).addComponent(stop))
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-							.addComponent(car_1_Slider).addComponent(car_2_Slider).addComponent(car_3_Slider))
+							.addComponent(car_1_Slider).addComponent(car_2_Slider).addComponent(car_3_Slider).addComponent(car_4_Slider))
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(trafficLight1at1000).addComponent(trafficLight1at1000Text)
 							.addComponent(trafficLight2at2000).addComponent(trafficLight2at2000Text)
@@ -153,7 +183,159 @@ public class trafficLightandCarGui extends JFrame
 					
 	}
 	
+	private void setButtons() 
+	{
+    
+		//Start car and intersection threads with start button
+        start.addActionListener((ActionEvent e) -> 
+        {
+            
+        	if(!trafficCarSimulatorIsRunning.get()) 
+        	{
+                
+        		System.out.println(Thread.currentThread().getName() + " calling start");
+        		Light_1.start();
+        		Light_2.start();
+        		Light_3.start();
+        		car_1.start();
+        		car_2.start();
+        		car_3.start();
+        		car_4.start();
+
+                gui.start();
+
+            }
+        
+        	//Sets trafficCarSimulatorIsRunning to true
+           	trafficCarSimulatorIsRunning.set(true);   
+       
+        });
+        
+        pause.addActionListener((ActionEvent e) ->
+        {
+        
+        	if(trafficCarSimulatorIsRunning.get()) 
+        	{
+                //Loop through cars and intersections to call suspend()
+                for(CarFormula color_variable: carObjectsArray) 
+                {
+                	
+                	color_variable.suspend();
+                    System.out.println(Thread.currentThread().getName() + " is now suspended");
+                
+                }
+                
+                for(TrafficLightIntersection color_variable: TrafficLightintersectionArray) 
+                {
+                  
+                	//Call interrupt for sleeping intersection threads
+                	color_variable.interrupt();
+                	color_variable.suspend();
+                
+                }
+
+                pause.setText("Keeping Going Forward");
+                trafficCarSimulatorIsRunning.set(false);
+            
+        	}else
+        	{
+                for(CarFormula color_variable: carObjectsArray) 
+                {
+                    
+                	if(color_variable.carisSuspended.get()) 
+                	{
+                    	
+                		color_variable.resume();
+                        System.out.println(Thread.currentThread().getName() + " is now resuming");
+                    
+                	}
+                
+                }
+                
+                for(TrafficLightIntersection color_variable: TrafficLightintersectionArray) 
+                {
+                
+                	color_variable.resume();
+               
+                }
+                
+                pause.setText("Now is Paused");
+                trafficCarSimulatorIsRunning.set(true);
+            
+        	}
+       
+        });
+        
+        stop.addActionListener((ActionEvent e) -> 
+        {
+            
+        	if(trafficCarSimulatorIsRunning.get()) 
+        	{
+                
+        		System.out.println(Thread.currentThread().getName() + " is now being put to a stop");
+                
+        		for(CarFormula color_variable: carObjectsArray) 
+        		{
+                    
+        			color_variable.stop();
+                
+        		}
+                for(TrafficLightIntersection color_variable: TrafficLightintersectionArray) 
+                {
+                
+                	color_variable.stop();
+               
+                }
+                trafficCarSimulatorIsRunning.set(false);
+            }
+        });
+
+	}    
 	
+	@Override
+    public void stateChanged(ChangeEvent e) 
+	{
+       
+		//Table updates data as the slider change
+		carStateData[0][1] = car_1_Slider.getValue();
+		carStateData[1][1] = car_2_Slider.getValue();
+		carStateData[2][1] = car_3_Slider.getValue();
+		carStateData[3][1] = car_4_Slider.getValue();
+
+        
+        //Table updates speed
+		carStateData[0][3] = car_1.getCarSpeed() + " kilometers/hours";
+		carStateData[1][3] = car_2.getCarSpeed() + " kilometers/hours";
+		carStateData[2][3] = car_3.getCarSpeed() + " kilometers/hours";
+		carStateData[3][3] = car_4.getCarSpeed() + " kilometers/hours";
+		
+		
+        //Table is updated with changed information
+		carDataTable.repaint();
+    
+	}
+	
+	
+	@Override
+    public void run() 
+	{
+        
+		while(carisRunning) 
+        {
+            
+			//Car Sliders are set to running, if the simulator is running. 
+            if(trafficCarSimulatorIsRunning.get()) 
+            {
+            
+            	car_1_Slider.setValue(car_1.getX_Position());
+            	car_2_Slider.setValue(car_2.getX_Position());
+            	car_3_Slider.setValue(car_3.getX_Position());
+            	car_4_Slider.setValue(car_4.getX_Position());
+
+            	
+            }
+        }
+    }
 	public static void main(String[] args) 
 	{
 	
@@ -162,6 +344,7 @@ public class trafficLightandCarGui extends JFrame
 		trafficLightandCarGui test = new trafficLightandCarGui();
 		
 		test.display();
+		gui = new Thread(test);
 		
 	}
 
