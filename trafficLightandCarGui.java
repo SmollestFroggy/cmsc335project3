@@ -2,6 +2,7 @@ package CMSC335_project3;
 
 
 import java.awt.Dimension;
+
 import javax.swing.*;
 
 
@@ -22,10 +23,18 @@ public class trafficLightandCarGui extends JFrame
 	static JSlider car_1_Slider = new JSlider(0, 3000);
 	static JSlider car_2_Slider = new JSlider(0, 3000);
 	static JSlider car_3_Slider = new JSlider(0, 3000);
+
+	//creates 3 runnable car objects and a thread for each car object
+	CarFormula car_1 = new CarFormula("Car_1Thread", 200, 0);
+	CarFormula car_2 = new CarFormula("Car_2Thread", 600, 0);
+	CarFormula car_3 = new CarFormula("Car_3Thread", 1500, 500);
+
+	//This is an array that allows for a loop.
+	CarFormula[] carObjectsArray = {car_1, car_2, car_3};
+	static Thread gui;
 	
 	
-	
-	Object [][] carStateData = { {"Car #1", 200 , 0, 0}, {"Car #2", 0 , 0 ,0}, {"Car #3", 0 , 0 ,0}};
+	Object [][] carStateData = { {"Car #1", car_1.getX_Position(), 0, 0}, {"Car #2", car_2.getX_Position() , 0 ,0}, {"Car #3", car_3.getX_Position(), 0 ,0}};
 	
 	
 	String[] columnNameLabels = {"Car#" , "X-Position" , "Y-Position" , "Speed(in Kilometers per hour)"};
@@ -65,17 +74,32 @@ public class trafficLightandCarGui extends JFrame
 		JLabel trafficLight2at2000 = new JLabel("Intersection 2 (2000 Meters):");
 		JLabel trafficLight3at3000 = new JLabel("Intersection 3 (3000 Meters):");
 		
-		car_1_Slider.setValue(0);
-		car_2_Slider.setValue(0);
-		car_3_Slider.setValue(0);
-	 
-		car_1_Slider.setMajorTickSpacing(1000);
+		car_1_Slider.setValue(car_1.getX_Position());
+		car_2_Slider.setValue(car_2.getX_Position());
+		car_3_Slider.setValue(car_3.getX_Position());
+		
+		
 		car_1_Slider.setPaintTicks(true);
+		car_1_Slider.setPaintTrack(true);
+		car_1_Slider.setPaintLabels(true);
+		car_1_Slider.setMajorTickSpacing(1000);
+		car_1_Slider.setMinorTickSpacing(100);
 		
-		car_2_Slider.setMajorTickSpacing(1000);
+		
+		
 		car_2_Slider.setPaintTicks(true);
+		car_2_Slider.setPaintTrack(true);
+		car_2_Slider.setPaintLabels(true);
+		car_2_Slider.setMajorTickSpacing(1000);
+		car_2_Slider.setMinorTickSpacing(100);
 		
-		carDataTable.setPreferredScrollableViewportSize(new Dimension(300, 45));
+		car_3_Slider.setPaintTicks(true);
+		car_3_Slider.setPaintTrack(true);
+		car_3_Slider.setPaintLabels(true);
+		car_3_Slider.setMajorTickSpacing(1000);
+		car_3_Slider.setMinorTickSpacing(100);
+		
+		carDataTable.setPreferredScrollableViewportSize(new Dimension(400, 50));
 		carDataTable.setFillsViewportHeight(true);
 		
 		
@@ -125,11 +149,8 @@ public class trafficLightandCarGui extends JFrame
 							
 		);
 							
-		
 		pack();
-		
-		
-		
+					
 	}
 	
 	
