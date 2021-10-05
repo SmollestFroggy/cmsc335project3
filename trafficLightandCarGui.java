@@ -35,10 +35,10 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 	TrafficLightIntersection Light_2 = new TrafficLightIntersection("2ndThread", trafficLight2at2000Text);
 	TrafficLightIntersection Light_3 = new TrafficLightIntersection("3rdThread", trafficLight3at3000Text);
 	
-	//creates 3 runnable car objects and a thread for each car object
+	//creates 4 runnable car objects and a thread for each car object
 	CarFormula car_1 = new CarFormula("Car_1Thread", 300, 0);
 	CarFormula car_2 = new CarFormula("Car_2Thread", 1000, 0);
-	CarFormula car_3 = new CarFormula("Car_3Thread", 1500, 1000);
+	CarFormula car_3 = new CarFormula("Car_3Thread", 1300, 500);
 	CarFormula car_4 = new CarFormula("Car_4Thread", 2000, 1000);
 	
 	
@@ -102,8 +102,6 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 		car_3_Slider.addChangeListener(this);
 		car_4_Slider.addChangeListener(this);
 
-
-		
 		car_1_Slider.setValue(car_1.getX_Position());
 		car_2_Slider.setValue(car_2.getX_Position());
 		car_3_Slider.setValue(car_3.getX_Position());
@@ -200,6 +198,9 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 
                 gui.start();
                 start.setEnabled(false);
+                
+                
+                
             }
         
         	//Sets trafficCarSimulatorIsRunning to true

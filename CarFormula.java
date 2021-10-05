@@ -36,17 +36,28 @@ public class CarFormula implements Runnable
 	}
 	
 	public int getCarSpeed() {
-        if(carisRunning.get()) {
+        if(carisRunning.get()) 
+        {
             if(carisAtLight.get()) 
+            {
+            
             	speedofCar = 0;
+            
+            }
+            
             else 
+            {
                 //Incrementing 5 meters every 1/10th of a second.
                 //Thats 50 meters per second, 3000 meters per minute
                 //3 km per minute * 60 for 180 kph
             	speedofCar = 3*60;
-        } else 
+        	}
+        } 
+        else 
+        {
         	speedofCar = 0;
-        return speedofCar;
+        }
+      return speedofCar;
     }
 	
 	public void start() 
