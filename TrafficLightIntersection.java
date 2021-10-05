@@ -8,13 +8,11 @@ import javax.swing.JLabel;
 public class TrafficLightIntersection implements Runnable
 {
 
-	private final String[] traffic_light_colors = {"Green", "Yellow", "RED"};
+	private final String[] traffic_light_colors = {"Green", "Yellow", "Red"};
 	private int color_variable = 0;
 	private String colorOfLight = traffic_light_colors[color_variable];
-	
 	private final AtomicBoolean carisRunning = new AtomicBoolean(false);
 	public final AtomicBoolean carisSuspended = new AtomicBoolean(false);
-	
 	Thread thread1;
 	String nameOfThread;
 	
@@ -43,7 +41,7 @@ public class TrafficLightIntersection implements Runnable
     {
     
     	carisSuspended.set(true);
-        System.out.println(nameOfThread + "is now suspending.");
+        System.out.println( "Now suspending." + nameOfThread);
     
     }
     
@@ -59,7 +57,7 @@ public class TrafficLightIntersection implements Runnable
     public void start() 
     {
     
-    	System.out.println(nameOfThread + " is now starting. ");
+    	System.out.println("now starting " + nameOfThread);
         
     	if(thread1 == null) 
     	{
@@ -90,7 +88,6 @@ public class TrafficLightIntersection implements Runnable
     
     @Override
     public void run() 
-    
     {
         System.out.println("Running " + nameOfThread);
         carisRunning.set(true);
@@ -99,7 +96,7 @@ public class TrafficLightIntersection implements Runnable
             try 
             {
                 synchronized(this) 
-                {
+                	{	
                         while(carisSuspended.get()) 
                         {
                             
@@ -108,7 +105,7 @@ public class TrafficLightIntersection implements Runnable
                        
                         }
                     
-                }
+                	}
                 
                 switch (getTrafficLightColor())
                 {
@@ -120,16 +117,14 @@ public class TrafficLightIntersection implements Runnable
                         Thread.sleep(10000);
                         color_variable++;
                         break;
-                    
-                	case "Yellow":
+                    case "Yellow":
                     	intersectionLabel.setForeground(new Color(247, 226, 35)); ///Makes Text  color yellow
                     	intersectionLabel.setText(getTrafficLightColor());
                         //Yellow for 5 seconds
                         Thread.sleep(5000);
                         color_variable++;
                         break;
-                    
-                    case "Red":
+                	case "Red":
                         intersectionLabel.setForeground(Color.RED); //Makes Text color red
                         intersectionLabel.setText(getTrafficLightColor());
                         //Red for 5 seconds
@@ -137,21 +132,18 @@ public class TrafficLightIntersection implements Runnable
                         //Set i back to 0
                         color_variable = 0;
                         break;
-                   
                     default:
                         break;
                 }
 
             } catch (InterruptedException ex) {
+				System.err.println (ex);
+
                 //If thread gets interrupted, set suspended true
             	carisSuspended.set(true);
             }
-        
-        
         }
     }
-
-
-    
+   
     
 }

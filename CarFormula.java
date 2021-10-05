@@ -10,9 +10,7 @@ public class CarFormula implements Runnable
 {
 
 	private int X_Position;
-	private int Y_Position = 0;
 	private final AtomicBoolean carisRunning = new AtomicBoolean(false);
-	
 	public final AtomicBoolean carisAtLight = new AtomicBoolean(false);
 	public final AtomicBoolean carisSuspended = new AtomicBoolean(false);
 	
@@ -20,12 +18,12 @@ public class CarFormula implements Runnable
 	public Thread thread1;
 	private int speedofCar = 0;
 	
-	//This is a constructor for the name, lowest, and highest: the range of the initial X_Position of car is based off highest and lowest'
-	public CarFormula(String thread_name, int highest, int lowest) 
+	//This is a constructor for the name, lowest, and highest: the range of the initial X_Position of car is based off max and min'
+	public CarFormula(String thread_name, int max, int min) 
 	{
 		
 		this.nameOfThread = thread_name;
-		this.X_Position = ThreadLocalRandom.current().nextInt(lowest,highest);
+		this.X_Position = ThreadLocalRandom.current().nextInt(min,max);
 		System.out.println("Creating threadname: " + nameOfThread);
 			
 	}
@@ -37,43 +35,24 @@ public class CarFormula implements Runnable
  
 	}
 	
-	public int getCarSpeed() 
-	{
-    
-		if(carisRunning.get()) 
-		{
-            
-			if(carisAtLight.get()) 
-			{
-				
-				speedofCar = 0;
-		
-			}
-			
-			else 
-			{
-			
-				speedofCar = 3*60;
-			
-			}
-        
-		}
-		
-		else 
-		{
-        
-			speedofCar = 0;
-		
-		}
-     
-		return speedofCar;
+	public int getCarSpeed() {
+        if(carisRunning.get()) {
+            if(carisAtLight.get()) 
+            	speedofCar = 0;
+            else 
+                //Incrementing 5 meters every 1/10th of a second.
+                //Thats 50 meters per second, 3000 meters per minute
+                //3 km per minute * 60 for 180 kph
+            	speedofCar = 3*60;
+        } else 
+        	speedofCar = 0;
+        return speedofCar;
     }
 	
 	public void start() 
 	{
         
 		System.out.println("Starting " + nameOfThread);
-       
 		if(thread1 == null)
         {
         	
@@ -115,8 +94,6 @@ public class CarFormula implements Runnable
        
         }
     }
-	
-	
 	@Override
 	public void run()
 	{
@@ -155,7 +132,7 @@ public class CarFormula implements Runnable
 				X_Position = 0;
 			}catch (InterruptedException ex)
 			{
-				
+				System.err.println (ex);
 				return;
 				
 			}

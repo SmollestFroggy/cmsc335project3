@@ -10,7 +10,7 @@ import javax.swing.event.ChangeListener;
 
 public class trafficLightandCarGui extends JFrame implements Runnable, ChangeListener
 {
-	
+	static JLabel CurrentTimeText = new JLabel();
 	static JLabel trafficLight1at1000Text = new JLabel();
 	static JLabel trafficLight2at2000Text = new JLabel();
 	static JLabel trafficLight3at3000Text = new JLabel();
@@ -27,19 +27,20 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 	static JSlider car_4_Slider = new JSlider(0, 3000);
 
 	
-	private static boolean carisRunning;
+	private static boolean carIsRunning;
 	private static final AtomicBoolean trafficCarSimulatorIsRunning = new AtomicBoolean(false);
 	
-	//creates 3 runnable car objects and a thread for each car object
-	CarFormula car_1 = new CarFormula("Car_1Thread", 200, 0);
-	CarFormula car_2 = new CarFormula("Car_2Thread", 600, 0);
-	CarFormula car_3 = new CarFormula("Car_3Thread", 2000, 1000);
-	CarFormula car_4 = new CarFormula("Car_3Thread", 2000, 1000);
 	
 	TrafficLightIntersection Light_1 = new TrafficLightIntersection("1stThread", trafficLight1at1000Text);
 	TrafficLightIntersection Light_2 = new TrafficLightIntersection("2ndThread", trafficLight2at2000Text);
 	TrafficLightIntersection Light_3 = new TrafficLightIntersection("3rdThread", trafficLight3at3000Text);
-
+	
+	//creates 3 runnable car objects and a thread for each car object
+	CarFormula car_1 = new CarFormula("Car_1Thread", 300, 0);
+	CarFormula car_2 = new CarFormula("Car_2Thread", 1000, 0);
+	CarFormula car_3 = new CarFormula("Car_3Thread", 1500, 1000);
+	CarFormula car_4 = new CarFormula("Car_4Thread", 2000, 1000);
+	
 	
 	//This is an array that allows for a loop.
 	CarFormula[] carObjectsArray = {car_1, car_2, car_3, car_4};
@@ -48,10 +49,11 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 	
 	
 	Object [][] carStateData = { 
-			{"Car #1", car_1.getX_Position(), 0, 0}
-			, {"Car #2", car_2.getX_Position() , 0 ,0}
-			, {"Car #3", car_3.getX_Position(), 0 ,0}
-			, {"Car #4", car_4.getX_Position(), 0 ,0}};
+			{"Car #1", car_1.getX_Position(), 0, 0},
+			{"Car #2", car_2.getX_Position(), 0 ,0},
+			{"Car #3", car_3.getX_Position(), 0 ,0},
+			{"Car #4", car_4.getX_Position(), 0 ,0}
+		};
 	
 	
 	String[] columnNameLabels = {"Car#" , "X-Position" , "Y-Position" , "Speed(Kilometers/hour)"};
@@ -63,7 +65,7 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 	{
 		
 		super("CMSC335_Project3_Nathan_Ma's_Traffic_and_Car_Tracker");
-		carisRunning = Thread.currentThread().isAlive();
+		carIsRunning = Thread.currentThread().isAlive();
 		createGUI();
         setButtons();
 
@@ -88,6 +90,8 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 		JLabel greetingTitle = new JLabel("Hello! You have accessed the traffic light and car Simulator!!");
 		JLabel userInstruction1 = new JLabel("Please Click on the Start Button to start the Simulator!~~~ :)");
 		
+		JLabel currentTime = new JLabel("The Time right now is: ");
+		
 		//labels the intersections 1, 2 and 3)
 		JLabel trafficLight1at1000 = new JLabel("Intersection 1 (1000 Meters):");
 		JLabel trafficLight2at2000 = new JLabel("Intersection 2 (2000 Meters):");
@@ -107,28 +111,14 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 		
 		
 		car_1_Slider.setPaintTicks(true);
-		car_1_Slider.setPaintLabels(true);
 		car_1_Slider.setMajorTickSpacing(1000);
-		car_1_Slider.setMinorTickSpacing(100);
-				
+
 		
 		car_2_Slider.setPaintTicks(true);
-		car_2_Slider.setPaintLabels(true);
 		car_2_Slider.setMajorTickSpacing(1000);
-		car_2_Slider.setMinorTickSpacing(100);
+
 		
-		
-		car_3_Slider.setPaintTicks(true);
-		car_3_Slider.setPaintLabels(true);
-		car_3_Slider.setMajorTickSpacing(1000);
-		car_3_Slider.setMinorTickSpacing(100);
-		
-		
-		car_4_Slider.setPaintTicks(true);
-		car_4_Slider.setPaintLabels(true);
-		car_4_Slider.setMajorTickSpacing(1000);
-		car_4_Slider.setMinorTickSpacing(100);
-		
+
 		carDataTable.setPreferredScrollableViewportSize(new Dimension(650, 70));
 		carDataTable.setFillsViewportHeight(true);
 		
@@ -149,6 +139,9 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(greetingTitle).addComponent(userInstruction1)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				        .addGroup(layout.createSequentialGroup()
+				                  .addComponent(currentTime).addComponent(CurrentTimeText)))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						 .addGroup(layout.createSequentialGroup()    
 				                    .addComponent(start).addComponent(pause).addComponent(stop)))       
@@ -165,6 +158,9 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createSequentialGroup().addComponent(greetingTitle).addComponent(userInstruction1))
 					.addGap(20, 20, 20)
+					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+		                    .addComponent(currentTime)
+		                    .addComponent(CurrentTimeText))
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(start).addComponent(pause).addComponent(stop))
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -193,7 +189,7 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
         	if(!trafficCarSimulatorIsRunning.get()) 
         	{
                 
-        		System.out.println(Thread.currentThread().getName() + " calling start");
+        		System.out.println(Thread.currentThread().getName() + " calls for start.");
         		Light_1.start();
         		Light_2.start();
         		Light_3.start();
@@ -203,16 +199,15 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
         		car_4.start();
 
                 gui.start();
-
+                start.setEnabled(false);
             }
         
         	//Sets trafficCarSimulatorIsRunning to true
            	trafficCarSimulatorIsRunning.set(true);   
-       
+           	
         });
         
-        pause.addActionListener((ActionEvent e) ->
-        {
+        pause.addActionListener((ActionEvent e) -> {
         
         	if(trafficCarSimulatorIsRunning.get()) 
         	{
@@ -233,7 +228,7 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
                 	color_variable.suspend();
                 
                 }
-
+                
                 pause.setText("Keeping Going Forward");
                 trafficCarSimulatorIsRunning.set(false);
             
@@ -242,8 +237,7 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
                 for(CarFormula color_variable: carObjectsArray) 
                 {
                     
-                	if(color_variable.carisSuspended.get()) 
-                	{
+                	if(color_variable.carisSuspended.get()) {
                     	
                 		color_variable.resume();
                         System.out.println(Thread.currentThread().getName() + " is now resuming");
@@ -315,12 +309,107 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
     
 	}
 	
+	private void getData() 
+	{
+        if(trafficCarSimulatorIsRunning.get()) 
+        {
+        //Get colors for intersections, if Red check xPosition
+	        switch(Light_1.getTrafficLightColor()) 
+	        {
+	            case "Red":
+	                for(CarFormula color_variable: carObjectsArray) 
+	                {
+	                    //If car xPosition is within 500 meters and light is red, set suspend to true for car to wait
+	                    if(color_variable.getX_Position()>800 && color_variable.getX_Position()<1000) 
+	                    {
+	                    	color_variable.carisAtLight.set(true);
+	                    }
+	                }
+	                break;
+	            
+	            case "Green":
+	                for(CarFormula color_variable: carObjectsArray)
+	                {
+	                    if(color_variable.carisAtLight.get()) 
+	                    {
+	                    	color_variable.resume();
+	                    }
+	                }
+	                break;
+	        }
+	        
+	        switch(Light_2.getTrafficLightColor())
+	        {
+	          
+	        	case "Red":
+	                for(CarFormula color_variable: carObjectsArray) 
+	                {
+	                    //If car xPosition is within 500 meters and light is red, set suspend to true for car to wait
+	                    if(color_variable.getX_Position()>1800 && color_variable.getX_Position()<2000)
+	                    {
+	                    
+	                    	color_variable.carisAtLight.set(true);
+	                   
+	                    }
+	                
+	                }
+	               
+	                break;
+	            
+	        	case "Green":
+	                for(CarFormula color_variable:carObjectsArray) 
+	                {
+	                   
+	                	if(color_variable.carisAtLight.get()) 
+	                	{
+	                    
+	                		color_variable.resume();
+	                  
+	                	}
+	                
+	                }
+	               
+	                break;
+	       
+	        }
+	        
+	        switch(Light_3.getTrafficLightColor()) 
+	        {
+	            case "Red":
+	                for(CarFormula color_variable: carObjectsArray)
+	                {
+	                    //If car xPosition is within 500 meters and light is red, set suspend to true for car to wait
+	                    
+	                	if(color_variable.getX_Position()>2800 && color_variable.getX_Position()<3000) 
+	                    {
+	                   
+	                		color_variable.carisAtLight.set(true);
+	                   
+	                    }
+	               
+	                }
+	                break;
+	            
+	            case "Green":
+	                for(CarFormula color_variable: carObjectsArray) 
+	                {
+	                    if(color_variable.carisAtLight.get())
+	                    {
+	                    	color_variable.resume();
+	                    }
+	                }
+	                break;
+	        }
+        }
+        
+    }
+    
 	
 	@Override
     public void run() 
 	{
         
-		while(carisRunning) 
+		while(carIsRunning) 
         {
             
 			//Car Sliders are set to running, if the simulator is running. 
@@ -332,19 +421,21 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
             	car_3_Slider.setValue(car_3.getX_Position());
             	car_4_Slider.setValue(car_4.getX_Position());
 
-            	
+            	getData();
             }
         }
     }
 	public static void main(String[] args) 
 	{
-	
+	 
 		// executes project3 code
 		
 		trafficLightandCarGui test = new trafficLightandCarGui();
 		
 		test.display();
 		gui = new Thread(test);
+		Thread currentTime = new Thread(new CurrentTime());
+		currentTime.start();
 		
 	}
 
