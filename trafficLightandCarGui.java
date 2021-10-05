@@ -62,11 +62,10 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 	static Thread gui;
 	
 	
-	Object [][] carStateData = { 
-			{"Car #1", car_1.getX_Position(), 0, 0},
-			{"Car #2", car_2.getX_Position(), 0 ,0},
-			{"Car #3", car_3.getX_Position(), 0 ,0},
-			{"Car #4", car_4.getX_Position(), 0 ,0}
+	Object [][] carStateData = 
+		{ 
+			{"Car #1", car_1.getX_Position(), 0, 0}, {"Car #2", car_2.getX_Position(), 0 ,0},
+			{"Car #3", car_3.getX_Position(), 0 ,0}, {"Car #4", car_4.getX_Position(), 0 ,0}
 		};
 	
 	
@@ -279,7 +278,7 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
         
         stop.addActionListener((ActionEvent e) -> 
         {
-            
+        	pause.setEnabled(false);
         	if(trafficCarSimulatorIsRunning.get()) 
         	{
                 
@@ -297,6 +296,7 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
                 	color_variable.stop();
                
                 }
+                
                 trafficCarSimulatorIsRunning.set(false);
             }
         });
@@ -442,6 +442,7 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
             }
         }
     }
+	
 	public static void main(String[] args) 
 	{
 	 

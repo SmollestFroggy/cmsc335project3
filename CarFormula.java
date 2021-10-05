@@ -24,7 +24,7 @@ public class CarFormula implements Runnable
 		
 		this.nameOfThread = thread_name;
 		this.X_Position = ThreadLocalRandom.current().nextInt(min,max);
-		System.out.println("Creating threadname: " + nameOfThread);
+		System.out.println( nameOfThread + " has been created.");
 			
 	}
 
@@ -35,10 +35,13 @@ public class CarFormula implements Runnable
  
 	}
 	
-	public int getCarSpeed() {
-        if(carisRunning.get()) 
+	public int getCarSpeed() 
+	{
+       
+		if(carisRunning.get()) 
         {
-            if(carisAtLight.get()) 
+           
+			if(carisAtLight.get()) 
             {
             
             	speedofCar = 0;
@@ -47,18 +50,20 @@ public class CarFormula implements Runnable
             
             else 
             {
-                //Incrementing 5 meters every 1/10th of a second.
-                //Thats 50 meters per second, 3000 meters per minute
-                //3 km per minute * 60 for 180 kph
-            	speedofCar = 3*60;
+                
+            	speedofCar = 3*60; 		//Speed updated to either 0 or 180 kilometers per hour. 
         	}
         } 
         else 
         {
+        	
         	speedofCar = 0;
+      
         }
-      return speedofCar;
-    }
+      
+        return speedofCar;
+   
+	}
 	
 	public void start() 
 	{
@@ -78,7 +83,7 @@ public class CarFormula implements Runnable
     
 		thread1.interrupt();
 		carisRunning.set(false);
-        System.out.println("Stopping now at " + nameOfThread);
+        System.out.println("Now Stopping " + nameOfThread + ".");
     
 	}
 	
@@ -86,7 +91,7 @@ public class CarFormula implements Runnable
 	{
      
 		carisSuspended.set(true);
-        System.out.println("Suspending " + nameOfThread);
+        System.out.println("Now Suspending " + nameOfThread + ".");
     
 	}
 
@@ -140,7 +145,9 @@ public class CarFormula implements Runnable
 					}
 						
 				}
+				
 				X_Position = 0;
+			
 			}catch (InterruptedException ex)
 			{
 				System.err.println (ex);

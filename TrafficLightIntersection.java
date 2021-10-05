@@ -8,11 +8,12 @@ import javax.swing.JLabel;
 public class TrafficLightIntersection implements Runnable
 {
 
+
+	private final AtomicBoolean carisRunning = new AtomicBoolean(false);
+	public final AtomicBoolean carisSuspended = new AtomicBoolean(false);
 	private final String[] traffic_light_colors = {"Green", "Yellow", "Red"};
 	private int color_variable = 0;
 	private String colorOfLight = traffic_light_colors[color_variable];
-	private final AtomicBoolean carisRunning = new AtomicBoolean(false);
-	public final AtomicBoolean carisSuspended = new AtomicBoolean(false);
 	Thread thread1;
 	String nameOfThread;
 	
@@ -57,7 +58,7 @@ public class TrafficLightIntersection implements Runnable
     public void start() 
     {
     
-    	System.out.println("now starting " + nameOfThread);
+    	System.out.println("Now starting " + nameOfThread);
         
     	if(thread1 == null) 
     	{
@@ -74,7 +75,7 @@ public class TrafficLightIntersection implements Runnable
     	
     	thread1.interrupt();
     	carisRunning.set(false);
-        System.out.println(nameOfThread + "has now been stopped." );
+        System.out.println(nameOfThread + " has now been stopped.");
    
     }
     
@@ -89,7 +90,7 @@ public class TrafficLightIntersection implements Runnable
     @Override
     public void run() 
     {
-        System.out.println("Running " + nameOfThread);
+        System.out.println(nameOfThread + " is running.");
         carisRunning.set(true);
         while(carisRunning.get())
         {
@@ -100,7 +101,7 @@ public class TrafficLightIntersection implements Runnable
                         while(carisSuspended.get()) 
                         {
                             
-                        	System.out.println(nameOfThread + " waiting");
+                        	System.out.println(nameOfThread + " is now waiting");
                             wait();
                        
                         }
@@ -111,33 +112,41 @@ public class TrafficLightIntersection implements Runnable
                 {
                    
                 	case "Green":
-                    	intersectionLabel.setForeground(new Color(0,200,10)); ///Makes Text  color to green
+                    	
+                		intersectionLabel.setForeground(new Color(0,200,10)); ///Makes Text  color to green
                     	intersectionLabel.setText(getTrafficLightColor());
-                        //Stay green for 10 seconds
-                        Thread.sleep(10000);
+                        //Stay green for 6 seconds
+                        Thread.sleep(6000);
                         color_variable++;
                         break;
-                    case "Yellow":
+                    
+                	case "Yellow":
+                    	
                     	intersectionLabel.setForeground(new Color(247, 226, 35)); ///Makes Text  color yellow
                     	intersectionLabel.setText(getTrafficLightColor());
-                        //Yellow for 5 seconds
-                        Thread.sleep(5000);
+                       
+                    	//Yellow for 3 seconds
+                        Thread.sleep(3000);
                         color_variable++;
                         break;
+                	
                 	case "Red":
                         intersectionLabel.setForeground(Color.RED); //Makes Text color red
                         intersectionLabel.setText(getTrafficLightColor());
-                        //Red for 5 seconds
-                        Thread.sleep(5000);
-                        //Set i back to 0
+                        
+                        //Red for 4 seconds
+                        Thread.sleep(4000);
+                       
+                        //Set color_varaible to 0
                         color_variable = 0;
                         break;
-                    default:
+                    
+                	default:
                         break;
                 }
 
             } catch (InterruptedException ex) {
-				System.err.println (ex);
+				System.err.println (ex); //used to 
 
                 //If thread gets interrupted, set suspended true
             	carisSuspended.set(true);
