@@ -1,3 +1,17 @@
+//File name: CMSC335_Project3
+//Due Date 10/12/2021
+//Code created Date: 10/5/2021
+//Purpose: - 
+// -Components listed above should run in separate threads. 
+//- Loop through the simulation with button(s) that can START, PAUSE, STOP, and continue on with simulation
+//- Distance formulas will be used e.g: distance = Speed * time. Define all units of measure no acronyms type out meter/hour, or kilometer/hour not km/h or m/h
+//- Distance between each light is 1000meters ( IS A COMPLETE STRAIGHT LINE) 
+//- Y = 0 for your x,y positions. 
+//- no physics is required, Cars will stop immediately on red light, and run through yellow and green lights. 
+//1. Current time stamps in 1 second intervals
+//2. Real-time Traffic light display for three major intersections
+//3. X, Y positions and speed of up to 3 cars as they traverse each of the 3 intersection
+
 package CMSC335_project3;
 
 import java.awt.Dimension;
@@ -136,10 +150,10 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 		layout.setAutoCreateContainerGaps(true);
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-						.addComponent(greetingTitle).addComponent(userInstruction1)
+						.addComponent(currentTime).addComponent(CurrentTimeText)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				        .addGroup(layout.createSequentialGroup()
-				                  .addComponent(currentTime).addComponent(CurrentTimeText)))
+				        		.addComponent(greetingTitle).addComponent(userInstruction1)))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						 .addGroup(layout.createSequentialGroup()    
 				                    .addComponent(start).addComponent(pause).addComponent(stop)))       
@@ -150,15 +164,17 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
 								.addComponent(trafficLight2at2000).addComponent(trafficLight2at2000Text).addContainerGap(20,20)								
 								.addComponent(trafficLight3at3000).addComponent(trafficLight3at3000Text))						
 								.addComponent(carDataPanel)))
+				
 				.addContainerGap(30,30)
 		);
 		
 		layout.setVerticalGroup(layout.createSequentialGroup()
-				.addGroup(layout.createSequentialGroup().addComponent(greetingTitle).addComponent(userInstruction1))
+				.addGroup(layout.createSequentialGroup()
+					.addComponent(currentTime)
+					.addComponent(CurrentTimeText))
 					.addGap(20, 20, 20)
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-		                    .addComponent(currentTime)
-		                    .addComponent(CurrentTimeText))
+							.addComponent(greetingTitle).addComponent(userInstruction1))
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(start).addComponent(pause).addComponent(stop))
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -254,7 +270,7 @@ public class trafficLightandCarGui extends JFrame implements Runnable, ChangeLis
                
                 }
                 
-                pause.setText("Now is Paused");
+                pause.setText("Pause Cars");
                 trafficCarSimulatorIsRunning.set(true);
             
         	}
